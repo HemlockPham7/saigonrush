@@ -1,4 +1,4 @@
-import React, { useRef, useMemo, useState } from 'react';
+import React, { useRef, useMemo, useState, useEffect } from 'react';
 import { useFrame } from '@react-three/fiber';
 import TrackChunk from './TrackChunk.jsx';
 import { useGameStore } from '../../store/useGameStore.js';
@@ -9,6 +9,7 @@ import {
   GAME_STATE,
   BASE_SPEED,
 } from '../../systems/constants.js';
+import { resetHitStates } from '../../systems/CollisionSystem.js';
 
 // Number of chunks in the pool (6 chunks * 30m = 180m view distance)
 const POOL_SIZE = 6;
@@ -40,6 +41,25 @@ export default function TrackPool() {
 
   // Track chunk recycling counter
   const nextVariantIndex = useRef(POOL_SIZE);
+
+  // Reset track pool when starting a fresh game or returning to menu
+  useEffect(() => {
+    if (gameState === GAME_STATE.PLAYING || gameState === GAME_STATE.MENU) {
+      // Check if pool is not in initial alignment
+      if (useGameStore.getState().distance === 0) {
+        for (let i = 0; i < POOL_SIZE; i++) {
+          poolState.current[i].z = -i * CHUNK_LENGTH;
+          poolState.current[i].chunkIndex = i;
+          if (chunkRefs.current[i]) {
+            chunkRefs.current[i].position.z = -i * CHUNK_LENGTH;
+          }
+        }
+        nextVariantIndex.current = POOL_SIZE;
+        setChunkVariants(Array.from({ length: POOL_SIZE }, (_, i) => i));
+        resetHitStates();
+      }
+    }
+  }, [gameState]);
 
   useFrame((state, delta) => {
     const dt = Math.min(delta, 0.1);

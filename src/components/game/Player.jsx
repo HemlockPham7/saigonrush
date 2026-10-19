@@ -16,7 +16,7 @@ import {
   SLIDE_HEIGHT,
   GAME_STATE,
 } from '../../systems/constants.js';
-import { checkCollisions, isInvincible } from '../../systems/CollisionSystem.js';
+import { checkCollisions, isInvincible, getGroundHeight } from '../../systems/CollisionSystem.js';
 
 // Reusable vectors for zero-allocation math in useFrame
 const _playerCenter = new THREE.Vector3();
@@ -45,6 +45,7 @@ export default function Player() {
   const currentXRef = useRef(0);
   const targetXRef = useRef(0);
   const posYRef = useRef(0);
+  const groundYRef = useRef(0);
   const velocityYRef = useRef(0);
   const isJumpingRef = useRef(false);
   const isSlidingRef = useRef(false);
@@ -73,8 +74,8 @@ export default function Player() {
           break;
 
         case 'JUMP':
-          // Can jump only when on ground and not already sliding
-          if (!isJumpingRef.current && posYRef.current <= 0.05) {
+          // Can jump when on ground (or bus roof) and not already sliding
+          if (!isJumpingRef.current && posYRef.current <= groundYRef.current + 0.1) {
             isJumpingRef.current = true;
             isSlidingRef.current = false;
             slideTimerRef.current = 0;
@@ -83,7 +84,7 @@ export default function Player() {
           break;
 
         case 'SLIDE':
-          if (isJumpingRef.current) {
+          if (isJumpingRef.current || posYRef.current > groundYRef.current + 0.1) {
             // Fast-fall mechanic: immediately slam downward
             velocityYRef.current = FAST_FALL_VELOCITY;
           } else {
@@ -108,6 +109,7 @@ export default function Player() {
       currentXRef.current = 0;
       targetXRef.current = 0;
       posYRef.current = 0;
+      groundYRef.current = 0;
       velocityYRef.current = 0;
       isJumpingRef.current = false;
       isSlidingRef.current = false;
@@ -137,6 +139,10 @@ export default function Player() {
     const speedBoost = activePowerUps.coffee > 0 ? 1.4 : 1.0;
     const strideFreq = 16 * speedBoost;
 
+    // Query current walkable ground height (asphalt = 0, bus ramp / roof = up to 2.45m)
+    const currentGroundY = isPlaying ? getGroundHeight(currentXRef.current) : 0;
+    groundYRef.current = currentGroundY;
+
     // 1. Horizontal Lane Interpolation
     currentXRef.current = THREE.MathUtils.damp(
       currentXRef.current,
@@ -149,16 +155,19 @@ export default function Player() {
     const deltaX = targetXRef.current - currentXRef.current;
     const tiltZ = -LANE_TILT_ANGLE * THREE.MathUtils.clamp(deltaX / 1.5, -1, 1);
 
-    // 2. Vertical Jump & Gravity Physics
-    if (isJumpingRef.current || posYRef.current > 0) {
+    // 2. Vertical Jump, Gravity Physics & Ramp Elevation
+    if (isJumpingRef.current || posYRef.current > currentGroundY) {
       velocityYRef.current -= JUMP_GRAVITY * dt;
       posYRef.current += velocityYRef.current * dt;
 
-      if (posYRef.current <= 0) {
-        posYRef.current = 0;
+      if (posYRef.current <= currentGroundY) {
+        posYRef.current = currentGroundY;
         velocityYRef.current = 0;
         isJumpingRef.current = false;
       }
+    } else {
+      // Running smoothly on surface (elevates automatically along bus ramp)
+      posYRef.current = currentGroundY;
     }
 
     // 3. Slide Timer & Posture
@@ -200,7 +209,7 @@ export default function Player() {
         leftArmRef.current.rotation.x = 0.8;
         rightArmRef.current.rotation.x = 0.8;
       }
-    } else if (isJumpingRef.current) {
+    } else if (isJumpingRef.current || posYRef.current > currentGroundY + 0.1) {
       // JUMP POSE: Arms open for balance, legs tuck slightly
       bodyGroupRef.current.scale.set(1, 1, 1);
       bodyGroupRef.current.position.y = 0;
@@ -222,7 +231,7 @@ export default function Player() {
       bodyGroupRef.current.scale.set(1, 1, 1);
       const bobbing = Math.abs(Math.sin(runCycle)) * 0.08;
       bodyGroupRef.current.position.y = isPlaying ? bobbing : 0;
-      bodyGroupRef.current.rotation.x = THREE.MathUtils.damp(bodyGroupRef.current.rotation.x, 0.08, 15, dt); // slight forward lean
+      bodyGroupRef.current.rotation.x = THREE.MathUtils.damp(bodyGroupRef.current.rotation.x, 0.08, 15, dt);
       bodyGroupRef.current.rotation.z = THREE.MathUtils.damp(bodyGroupRef.current.rotation.z, tiltZ, 18, dt);
 
       if (leftLegRef.current && rightLegRef.current) {
@@ -252,7 +261,7 @@ export default function Player() {
     // 6. Update Bounding Box for Collision System
     const currentHeight = isSlidingRef.current ? SLIDE_HEIGHT : PLAYER_HEIGHT;
     _playerCenter.set(currentXRef.current, posYRef.current + currentHeight * 0.5, 0);
-    _playerSize.set(0.8, currentHeight, 0.6);
+    _playerSize.set(0.68, currentHeight, 0.5);
     boundingBoxRef.current.setFromCenterAndSize(_playerCenter, _playerSize);
 
     // Export bounds onto userData for CollisionSystem
@@ -260,6 +269,7 @@ export default function Player() {
       laneIndex: laneIndexRef.current,
       currentX: currentXRef.current,
       posY: posYRef.current,
+      groundY: currentGroundY,
       isJumping: isJumpingRef.current,
       isSliding: isSlidingRef.current,
       boundingBox: boundingBoxRef.current,
@@ -271,6 +281,7 @@ export default function Player() {
         boundingBoxRef.current,
         {
           posY: posYRef.current,
+          groundY: currentGroundY,
           isJumping: isJumpingRef.current,
           isSliding: isSlidingRef.current,
           currentX: currentXRef.current,

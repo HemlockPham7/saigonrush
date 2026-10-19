@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { useGameStore } from '../store/useGameStore.js';
 import { GAME_STATE, POWERUP_CONFIG } from './constants.js';
 
-// Global obstacle registry: Map of obstacleId -> { id, type, box, position, laneIndex, isHit }
+// Global obstacle registry: Map of obstacleId -> { id, type, box, position, laneIndex, isHit, hasRamp, size }
 const activeObstacles = new Map();
 
 // Invincibility state (after shield break)
@@ -16,14 +16,29 @@ export function registerObstacle(id, obstacleData) {
 }
 
 /**
- * Update an obstacle's world bounding box and position
+ * Update an obstacle's world bounding box and position.
+ * If obstacle was not previously registered (e.g. after pool reset),
+ * automatically registers it with its metadata so it is never dropped.
  */
-export function updateObstacleBox(id, worldBox, worldPos) {
-  const item = activeObstacles.get(id);
-  if (item) {
-    item.box.copy(worldBox);
-    item.position.copy(worldPos);
+export function updateObstacleBox(id, worldBox, worldPos, obstacleData) {
+  let item = activeObstacles.get(id);
+  if (!item) {
+    if (!obstacleData) return;
+    item = {
+      id,
+      type: obstacleData.type,
+      laneIndex: obstacleData.lane,
+      hasRamp: obstacleData.hasRamp || false,
+      size: obstacleData.size,
+      box: new THREE.Box3().copy(worldBox),
+      position: new THREE.Vector3().copy(worldPos),
+      isHit: false,
+    };
+    activeObstacles.set(id, item);
+    return;
   }
+  item.box.copy(worldBox);
+  item.position.copy(worldPos);
 }
 
 /**
@@ -42,6 +57,16 @@ export function clearObstacles() {
 }
 
 /**
+ * Reset hit states on active obstacles (for replay without unmounting)
+ */
+export function resetHitStates() {
+  for (const obstacle of activeObstacles.values()) {
+    obstacle.isHit = false;
+  }
+  invincibilityTimer = 0;
+}
+
+/**
  * Check if player is currently in temporary invincibility frames
  */
 export function isInvincible() {
@@ -53,11 +78,56 @@ export function getInvincibilityTime() {
 }
 
 /**
+ * Compute the walkable ground height at player position (Z = 0)
+ * Allows player to run up SaigonBus ramps smoothly onto the bus roof (y = 2.45m)
+ *
+ * @param {number} playerX - Current lateral X position of player
+ * @returns {number} Surface height in meters (0 for asphalt, up to 2.45 for bus roof)
+ */
+export function getGroundHeight(playerX) {
+  let highestGround = 0;
+
+  for (const obstacle of activeObstacles.values()) {
+    if (obstacle.type !== 'bus') continue;
+
+    // Bus width is ~2.1m. Check if player X is within the bus lane
+    const xDist = Math.abs(playerX - obstacle.position.x);
+    if (xDist > 1.1) continue;
+
+    const busZ = obstacle.position.z;
+    const busHalfLength = 4.25; // Bus body length: 8.5m
+    const rampLength = 4.2;
+
+    if (obstacle.hasRamp) {
+      // Ramp extends in front (+Z direction) from busZ + 4.25 to busZ + 8.45
+      const rampEnd = busZ + busHalfLength + rampLength; // z where ramp touches road (y = 0)
+      const rampStart = busZ + busHalfLength; // z where ramp meets roof (y = 2.45)
+
+      // Player is at Z = 0 in world coordinates
+      if (0 >= rampStart && 0 <= rampEnd) {
+        // Player is climbing the ramp!
+        const progress = (rampEnd - 0) / rampLength; // 0.0 at road, 1.0 at roof
+        const rampY = THREE.MathUtils.clamp(progress, 0, 1) * 2.45;
+        if (rampY > highestGround) highestGround = rampY;
+        continue;
+      }
+    }
+
+    // Bus Roof Surface: z is between [busZ - 4.25, busZ + 4.25]
+    if (0 >= (busZ - busHalfLength) && 0 <= (busZ + busHalfLength)) {
+      if (2.45 > highestGround) highestGround = 2.45;
+    }
+  }
+
+  return highestGround;
+}
+
+/**
  * Main Collision Detection Loop
- * Called every frame in useFrame from a collision controller or player.
+ * Called every frame in useFrame from Player.
  *
  * @param {THREE.Box3} playerBox - Current player bounding box in world space
- * @param {Object} playerData - { posY, isJumping, isSliding, currentX, laneIndex }
+ * @param {Object} playerData - { posY, isJumping, isSliding, currentX, laneIndex, groundY }
  * @param {number} delta - Frame delta in seconds
  * @returns {Object|null} Collision event details or null
  */
@@ -74,42 +144,45 @@ export function checkCollisions(playerBox, playerData, delta) {
   const shieldActive = store.activePowerUps.shield;
 
   // Broad-phase: Player is at Z = 0 in world space
-  // Only test obstacles within |z_obstacle| < 4.5m
   for (const [id, obstacle] of activeObstacles.entries()) {
     if (obstacle.isHit) continue;
 
-    const zDist = Math.abs(obstacle.position.z);
-    if (zDist > 5.0) continue;
+    // Generous broad-phase proximity: only check obstacles within 5m of player
+    if (obstacle.box.min.z > 5.0 || obstacle.box.max.z < -5.0) {
+      continue;
+    }
+
+    // 1. Special check: SaigonBus with Ramp
+    if (obstacle.type === 'bus') {
+      // If player is on the roof or climbing the ramp (posY >= 2.2m), player is safe!
+      if (playerData.posY >= 2.2 || playerData.groundY > 0.1) {
+        continue;
+      }
+    }
+
+    // 2. Special check: OverheadWires & Sliding
+    if (obstacle.type === 'overhead') {
+      // If player is sliding, they duck safely under overhead cables (clearance > 1.15m)
+      if (playerData.isSliding) {
+        continue;
+      }
+    }
+
+    // 3. Special check: LowBarrier & Jumping
+    if (obstacle.type === 'low') {
+      // Low barrier height is ~0.6m. If player jump clearance is above 0.58m, safe!
+      if (playerData.posY > 0.58) {
+        continue;
+      }
+    }
 
     // Narrow-phase AABB test
     if (playerBox.intersectsBox(obstacle.box)) {
-      // 1. Special check: If obstacle is OverheadWires and player is sliding
-      if (obstacle.type === 'overhead' && playerData.isSliding) {
-        // Player is sliding low (height 0.6m) and safely clears the overhead cables!
-        continue;
-      }
-
-      // 2. Special check: If obstacle is SaigonBus and player is on the roof
-      if (obstacle.type === 'bus') {
-        // Bus roof is at y = 2.45m. If player is running on roof (y >= 2.35m), safe!
-        if (playerData.posY >= 2.35) {
-          continue;
-        }
-      }
-
-      // 3. Special check: If obstacle is LowBarrier and player is jumping above it
-      if (obstacle.type === 'low') {
-        // Low barrier max height is ~0.65m. If player is jumping above 0.7m, safe!
-        if (playerData.posY > 0.68) {
-          continue;
-        }
-      }
-
       // --- HIT DETECTED ---
-      // Case A: Cà phê speed rush is active -> smash obstacle!
+
+      // Case A: Cà phê speed rush active -> smash obstacle!
       if (coffeeActive) {
         obstacle.isHit = true;
-        // Obstacle smashed, player continues unhindered
         return {
           type: 'SMASH_OBSTACLE',
           obstacleId: id,
@@ -122,7 +195,7 @@ export function checkCollisions(playerBox, playerData, delta) {
         continue;
       }
 
-      // Case C: Nón lá shield is active -> absorb hit!
+      // Case C: Nón lá shield active -> absorb hit!
       if (shieldActive) {
         obstacle.isHit = true;
         store.consumeShield();
@@ -149,3 +222,4 @@ export function checkCollisions(playerBox, playerData, delta) {
 
   return null;
 }
+

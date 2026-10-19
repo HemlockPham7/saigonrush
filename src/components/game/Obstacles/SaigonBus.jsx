@@ -66,19 +66,24 @@ function SaigonBus({ position = [0, 0, 0], hasRamp = true }) {
         <boxGeometry args={[busWidth, 1.3, busLength]} />
       </mesh>
 
-      {/* Reinforced Walkable Roof Surface (y = 2.5m) */}
+      {/* Reinforced Walkable Roof Surface (y = 2.45m) */}
       <mesh position={[0, 2.45, 0]} receiveShadow material={materials.busRoof}>
         <boxGeometry args={[busWidth - 0.05, 0.1, busLength - 0.1]} />
       </mesh>
 
-      {/* Front Windshield */}
-      <mesh position={[0, 1.65, -busLength / 2 - 0.01]} material={materials.busGlass}>
+      {/* Front Windshield (Facing +Z towards oncoming runner) */}
+      <mesh position={[0, 1.65, busLength / 2 + 0.01]} material={materials.busGlass}>
         <planeGeometry args={[busWidth * 0.88, 0.95]} />
       </mesh>
 
       {/* Route LED Header Display ("01 BẾN THÀNH - CHỢ LỚN") */}
-      <mesh position={[0, 2.22, -busLength / 2 - 0.02]} material={materials.routeDisplay}>
+      <mesh position={[0, 2.22, busLength / 2 + 0.02]} material={materials.routeDisplay}>
         <planeGeometry args={[1.4, 0.22]} />
+      </mesh>
+
+      {/* Rear Window (Facing -Z) */}
+      <mesh position={[0, 1.65, -busLength / 2 - 0.01]} rotation-y={Math.PI} material={materials.busGlass}>
+        <planeGeometry args={[busWidth * 0.88, 0.95]} />
       </mesh>
 
       {/* Side Passenger Windows */}
@@ -94,9 +99,9 @@ function SaigonBus({ position = [0, 0, 0], hasRamp = true }) {
       {/* ===================================================================
           2. WHEELS (4 Large Bus Tires)
           =================================================================== */}
-      {/* Front Wheels */}
+      {/* Front Wheels (closer to +Z) */}
       {[-busWidth / 2 - 0.02, busWidth / 2 + 0.02].map((x, i) => (
-        <group key={`fw-${i}`} position={[x, 0.45, -2.6]}>
+        <group key={`fw-${i}`} position={[x, 0.45, 2.6]}>
           <mesh rotation-z={Math.PI / 2} castShadow material={materials.busTire}>
             <cylinderGeometry args={[0.45, 0.45, 0.18, 16]} />
           </mesh>
@@ -106,9 +111,9 @@ function SaigonBus({ position = [0, 0, 0], hasRamp = true }) {
         </group>
       ))}
 
-      {/* Rear Dual Wheels */}
+      {/* Rear Dual Wheels (closer to -Z) */}
       {[-busWidth / 2 - 0.02, busWidth / 2 + 0.02].map((x, i) => (
-        <group key={`rw-${i}`} position={[x, 0.45, 2.4]}>
+        <group key={`rw-${i}`} position={[x, 0.45, -2.4]}>
           <mesh rotation-z={Math.PI / 2} castShadow material={materials.busTire}>
             <cylinderGeometry args={[0.45, 0.45, 0.22, 16]} />
           </mesh>
@@ -121,13 +126,13 @@ function SaigonBus({ position = [0, 0, 0], hasRamp = true }) {
       {/* ===================================================================
           3. FRONT CLIMBABLE ROAD RAMP
           Sloped wedge from y = 0 to y = 2.45 over 4.2m length.
-          Allows running directly up onto the bus roof!
+          Faces +Z so runner runs up the ramp onto the bus roof!
           =================================================================== */}
       {hasRamp && (
-        <group position={[0, 0, -busLength / 2 - 2.1]}>
+        <group position={[0, 0, busLength / 2 + 2.1]}>
           {/* Sloped ramp surface */}
-          {/* Angle: atan(2.45 / 4.2) ≈ 30 degrees (0.52 rad) */}
-          <group position={[0, 1.22, 0]} rotation-x={-0.52}>
+          {/* Angle: +0.53 rad pitches +Z down to road level, -Z meets bus roof */}
+          <group position={[0, 1.22, 0]} rotation-x={0.53}>
             <mesh receiveShadow castShadow material={materials.rampWedge}>
               <boxGeometry args={[busWidth - 0.1, 0.12, 4.8]} />
             </mesh>

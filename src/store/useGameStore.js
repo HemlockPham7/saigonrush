@@ -37,6 +37,8 @@ const safeSetStorage = (key, value) => {
   }
 };
 
+import { resetHitStates } from '../systems/CollisionSystem.js';
+
 export const useGameStore = create((set, get) => ({
   // Game Flow State
   gameState: GAME_STATE.MENU,
@@ -61,6 +63,7 @@ export const useGameStore = create((set, get) => ({
 
   // Actions
   startGame: () => {
+    resetHitStates();
     set({
       gameState: GAME_STATE.PLAYING,
       score: 0,
@@ -104,6 +107,7 @@ export const useGameStore = create((set, get) => ({
   },
 
   resetToMenu: () => {
+    resetHitStates();
     set({
       gameState: GAME_STATE.MENU,
       score: 0,

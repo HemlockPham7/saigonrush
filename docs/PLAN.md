@@ -260,45 +260,45 @@ Coins, power-up meshes, duration countdowns, and active gameplay effects.
 ### Phase 7: User Interface (HUD, Menus & LocalStorage)
 Polished 2D overlay UI, start screen, real-time HUD, and game over modal.
 
-- [ ] **Task 7.1: Build Start / Title Screen (`StartMenu.jsx`)**
+- [x] **Task 7.1: Build Start / Title Screen (`StartMenu.jsx`)** ✅ *(done 2026-10-19: Cyberpunk-Saigon title screen with golden star emblem, glowing neon title, subtitle, controls guide with keycaps, Vietnamese power-up legend, all-time high score, and Play action)*
   - **Description**: Design vibrant cyberpunk-Saigon title screen with logo, "Press SPACE to Play" button, keyboard control preview, and current all-time High Score.
   - **Acceptance Criteria**:
     - Clean overlay that transitions seamlessly into game upon start.
     - Displays high score fetched from `localStorage`.
   - **Verification**: Clicking play or pressing Space launches game countdown/start.
-  - **Files**: `src/components/ui/StartMenu.jsx`, `src/components/ui/StartMenu.css`.
+  - **Files**: `src/components/ui/StartMenu.jsx`, `src/components/ui/UIOverlay.css`.
   - **Dependencies**: Task 2.1.
 
-- [ ] **Task 7.2: Build Real-Time In-Game HUD (`HUD.jsx`)**
+- [x] **Task 7.2: Build Real-Time In-Game HUD (`HUD.jsx`)** ✅ *(done 2026-10-19: Sleek 16:9 heads-up display with score counter, 2X multiplier badge, distance in meters, speed in km/h, golden coin counter, pause button, and active power-up status badges with countdown timers)*
   - **Description**: Build sleek HUD displaying current score, distance in meters, coins collected, and active power-up status rings with animated countdown timers.
   - **Acceptance Criteria**:
     - Responsive 16:9 layout with zero obstruction of player view.
     - Power-up countdown rings deplete smoothly as duration ticks down.
   - **Verification**: HUD updates dynamically during gameplay with zero frame-drop.
-  - **Files**: `src/components/ui/HUD.jsx`, `src/components/ui/HUD.css`.
+  - **Files**: `src/components/ui/HUD.jsx`, `src/components/ui/UIOverlay.css`.
   - **Dependencies**: Task 2.1, Phase 6.
 
-- [ ] **Task 7.3: Build Game Over Modal & Score Persistence (`GameOver.jsx`)**
+- [x] **Task 7.3: Build Game Over Modal & Score Persistence (`GameOver.jsx`)** ✅ *(done 2026-10-19: Results modal with final score, all-time high score, distance, coins, "NEW HIGH SCORE!" celebration badge, Space/Enter quick replay, and localStorage persistence)*
   - **Description**: Design Game Over results screen displaying final score, distance, coins, "NEW RECORD!" celebratory badge if personal best was beaten, and "Play Again" button.
   - **Acceptance Criteria**:
     - Saves personal best to `localStorage` key `saigonrush_highscore`.
     - Pressing Space or clicking Play Again resets world and starts new run instantly.
   - **Verification**: Crashing displays results modal; high scores persist across browser reloads.
-  - **Files**: `src/components/ui/GameOver.jsx`, `src/components/ui/GameOver.css`.
+  - **Files**: `src/components/ui/GameOver.jsx`, `src/components/ui/UIOverlay.css`.
   - **Dependencies**: Task 2.1.
 
-- [ ] **Task 7.4: Build Pause Modal & Audio Controls (`AudioControls.jsx`)**
+- [x] **Task 7.4: Build Pause Modal & Audio Controls (`AudioControls.jsx`)** ✅ *(done 2026-10-19: Frosted glass pause modal triggered by P/Esc with resume, restart, and main menu actions, plus AudioControls toggle with SVG speaker/mute icons and localStorage persistence)*
   - **Description**: Add Pause menu (triggered by `Escape` or `P`) and audio mute/unmute toggle button with saved preference in `localStorage`.
   - **Acceptance Criteria**:
     - Pausing freezes game loop and shows semi-transparent pause card.
     - Audio button toggles sound on/off with persistent icon state.
   - **Verification**: Pausing stops player movement; audio toggle updates store.
-  - **Files**: `src/components/ui/AudioControls.jsx`, `src/components/ui/PauseModal.jsx`.
+  - **Files**: `src/components/ui/AudioControls.jsx`, `src/components/ui/PauseModal.jsx`, `src/components/ui/UIOverlay.css`.
   - **Dependencies**: Task 2.1.
 
 #### Checkpoint 7: Complete UI Flow
-- [ ] End-to-end menu flow works: Start Menu -> Play -> HUD -> Pause -> Game Over -> Replay.
-- [ ] High scores and mute settings reliably persist in `localStorage`.
+- [x] End-to-end menu flow works: Start Menu -> Play -> HUD -> Pause -> Game Over -> Replay.
+- [x] High scores and mute settings reliably persist in `localStorage`.
 
 ---
 

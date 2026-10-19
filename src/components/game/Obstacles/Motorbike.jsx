@@ -33,16 +33,9 @@ function Motorbike({
 
   const bodyMat = color === 'blue' ? materials.bodyBlue : materials.bodyRed;
 
-  // Local movement for moving motorbikes
+  // Wheel spin animation for moving motorbikes
   useFrame((state, delta) => {
-    if (!bikeRef.current) return;
-
     if (isMoving && useGameStore.getState().gameState === GAME_STATE.PLAYING) {
-      // Motorbike drives along positive Z (same direction as traffic, slower than runner)
-      const forwardSpeed = 6.0; // m/s forward relative to track
-      bikeRef.current.position.z += forwardSpeed * delta;
-
-      // Wheel spin
       const spin = delta * 18.0;
       if (frontWheelRef.current) frontWheelRef.current.rotation.x += spin;
       if (rearWheelRef.current) rearWheelRef.current.rotation.x += spin;
