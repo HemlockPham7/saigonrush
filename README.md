@@ -6,6 +6,10 @@ Built with **React 19**, **Three.js**, **React Three Fiber (R3F)**, **`@react-th
 
 ---
 
+## Video Demo
+
+[![Saigonrush Demo](asset/demo/thumbnail.png)](https://www.youtube.com/watch?v=xAmkN12MT7Y)
+
 ## 🎮 Gameplay & Features
 
 - **Iconic Saigon Street Obstacles**:
