@@ -1,0 +1,181 @@
+/* ==========================================================================
+   Saigon Rush — global styles & design tokens
+   ========================================================================== */
+
+:root {
+  /* Saigon palette */
+  --sr-night: #0d0a14;          /* page backdrop */
+  --sr-night-2: #1a1226;
+  --sr-gold: #ffd166;           /* coins, highlights */
+  --sr-amber: #e09f3e;          /* golden-hour sun */
+  --sr-red: #da291c;            /* flag red, plastic stools */
+  --sr-bus-green: #2d9a5b;      /* Saigon city bus */
+  --sr-shophouse: #f4d58d;      /* pastel shophouse yellow */
+  --sr-mint: #8fd3c1;           /* colonial mint shutters */
+  --sr-neon-pink: #ff4f9a;      /* neon signage */
+  --sr-neon-cyan: #3be8ff;
+  --sr-text: #fff7e6;
+  --sr-text-dim: rgba(255, 247, 230, 0.65);
+
+  /* Typography */
+  --sr-font-display: 'Bungee', 'Be Vietnam Pro', system-ui, sans-serif;
+  --sr-font-body: 'Be Vietnam Pro', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  /* Stage */
+  --sr-stage-ratio: 16 / 9;
+  --sr-radius: 18px;
+
+  color-scheme: dark;
+  font-family: var(--sr-font-body);
+  color: var(--sr-text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  background:
+    radial-gradient(ellipse at 20% 10%, rgba(255, 79, 154, 0.18), transparent 55%),
+    radial-gradient(ellipse at 85% 90%, rgba(59, 232, 255, 0.14), transparent 55%),
+    radial-gradient(ellipse at 50% 50%, var(--sr-night-2), var(--sr-night) 75%);
+  user-select: none;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* --------------------------------------------------------------------------
+   App shell: centers a 16:9 stage and letterboxes on other aspect ratios
+   -------------------------------------------------------------------------- */
+.app-shell {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  padding: clamp(0px, 1.5vmin, 20px);
+}
+
+.game-stage {
+  position: relative;
+  aspect-ratio: var(--sr-stage-ratio);
+  /* fit inside viewport while preserving 16:9 */
+  width: min(100%, calc((100vh - 2 * clamp(0px, 1.5vmin, 20px)) * 16 / 9));
+  max-height: 100%;
+  border-radius: var(--sr-radius);
+  overflow: hidden;
+  background: #000;
+  box-shadow:
+    0 0 0 1px rgba(255, 209, 102, 0.25),
+    0 0 40px rgba(255, 79, 154, 0.25),
+    0 0 90px rgba(59, 232, 255, 0.12),
+    0 30px 60px rgba(0, 0, 0, 0.6);
+  animation: stage-in 700ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.game-stage canvas {
+  display: block;
+}
+
+/* Layer for DOM UI (HUD, menus) rendered above the canvas */
+.ui-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.ui-layer > * {
+  pointer-events: auto;
+}
+
+/* --------------------------------------------------------------------------
+   Brand badge (temporary dev overlay until StartMenu/HUD land in Phase 7)
+   -------------------------------------------------------------------------- */
+.brand-badge {
+  position: absolute;
+  top: 18px;
+  left: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px 8px 10px;
+  border-radius: 999px;
+  background: rgba(13, 10, 20, 0.55);
+  border: 1px solid rgba(255, 209, 102, 0.35);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  pointer-events: none;
+  animation: badge-in 900ms 250ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.brand-badge__icon {
+  width: 26px;
+  height: 26px;
+}
+
+.brand-badge__title {
+  font-family: var(--sr-font-display);
+  font-size: 18px;
+  letter-spacing: 0.04em;
+  background: linear-gradient(90deg, var(--sr-gold), var(--sr-neon-pink));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.brand-badge__tag {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--sr-text-dim);
+}
+
+@keyframes stage-in {
+  from {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes badge-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .game-stage,
+  .brand-badge {
+    animation: none;
+  }
+}

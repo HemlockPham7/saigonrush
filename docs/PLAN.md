@@ -15,7 +15,7 @@ Every task adheres strictly to `TECH_ARCHITECTURE.md` and `PRD.md`, delivering v
 ### Phase 1: Project Scaffolding & R3F Foundation
 Foundational setup of the Vite + React 19 + React Three Fiber development environment.
 
-- [ ] **Task 1.1: Initialize Vite Project & Install Dependencies**
+- [x] **Task 1.1: Initialize Vite Project & Install Dependencies** ✅ *(done 2026-10-19: Vite 6.4, React 19, three 0.186, R3F 9.8, drei 10.7, zustand 5; `.gitignore` extended for Node)*
   - **Description**: Initialize the Vite React project in the repository root and install `three`, `@react-three/fiber`, `@react-three/drei`, and `zustand`.
   - **Acceptance Criteria**:
     - `package.json` contains valid dependencies with clean resolution.
@@ -24,7 +24,7 @@ Foundational setup of the Vite + React 19 + React Three Fiber development enviro
   - **Files**: `package.json`, `vite.config.js`, `index.html`.
   - **Dependencies**: None.
 
-- [ ] **Task 1.2: Setup Directory Architecture & Global Styling**
+- [x] **Task 1.2: Setup Directory Architecture & Global Styling** ✅ *(done 2026-10-19: empty folders kept via `.gitkeep`; temporary "Dev Scene" brand badge until Phase 7 UI)*
   - **Description**: Create folder structure (`src/components/`, `src/store/`, `src/systems/`, `src/hooks/`, `public/assets/`) and establish 16:9 widescreen arcade layout in `src/index.css` with dark backdrop, responsive canvas framing, and Saigon color tokens.
   - **Acceptance Criteria**:
     - Clean directory hierarchy matching `TECH_ARCHITECTURE.md`.
@@ -33,7 +33,7 @@ Foundational setup of the Vite + React 19 + React Three Fiber development enviro
   - **Files**: `src/index.css`, `src/App.jsx`, `src/main.jsx`.
   - **Dependencies**: Task 1.1.
 
-- [ ] **Task 1.3: Build Core R3F Canvas & Lighting Scene**
+- [x] **Task 1.3: Build Core R3F Canvas & Lighting Scene** ✅ *(done 2026-10-19: placeholder nón lá + ground in `GameScene.jsx`, to be replaced in Phases 3–4)*
   - **Description**: Implement `GameCanvas.jsx`, `GameScene.jsx`, `Camera.jsx`, and `Lighting.jsx` with directional sunlight, warm ambient fill, soft shadow maps (`percentage`), and Saigon tropical depth fog.
   - **Acceptance Criteria**:
     - Perspective camera placed at `[0, 3.8, 6.5]` looking toward `[0, 1.4, -4.0]`.
@@ -43,8 +43,8 @@ Foundational setup of the Vite + React 19 + React Three Fiber development enviro
   - **Dependencies**: Task 1.2.
 
 #### Checkpoint 1: Foundation
-- [ ] Vite compiles with zero warnings.
-- [ ] R3F Canvas boots at 60 FPS with correct camera perspective and lighting.
+- [x] Vite compiles with zero warnings.
+- [ ] R3F Canvas boots at 60 FPS with correct camera perspective and lighting. *(pending manual browser check)*
 
 ---
 
