@@ -3,6 +3,7 @@ import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { useGameStore } from '../../../store/useGameStore.js';
 import { GAME_STATE, COIN_RADIUS, POWERUP_CONFIG } from '../../../systems/constants.js';
+import { soundSystem } from '../../../systems/SoundSystem.js';
 
 // Shared materials for coins
 const coinMaterials = {
@@ -87,6 +88,7 @@ function Coin({
       collectedRef.current = true;
       coinRef.current.visible = false;
       useGameStore.getState().addCoin(1);
+      soundSystem.playCoinSound();
       onCollect?.();
     }
   });

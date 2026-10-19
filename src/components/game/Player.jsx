@@ -17,6 +17,7 @@ import {
   GAME_STATE,
 } from '../../systems/constants.js';
 import { checkCollisions, isInvincible, getGroundHeight } from '../../systems/CollisionSystem.js';
+import { soundSystem } from '../../systems/SoundSystem.js';
 
 // Reusable vectors for zero-allocation math in useFrame
 const _playerCenter = new THREE.Vector3();
@@ -80,6 +81,7 @@ export default function Player() {
             isSlidingRef.current = false;
             slideTimerRef.current = 0;
             velocityYRef.current = JUMP_INITIAL_VELOCITY;
+            soundSystem.playJumpSound();
           }
           break;
 
@@ -87,10 +89,12 @@ export default function Player() {
           if (isJumpingRef.current || posYRef.current > groundYRef.current + 0.1) {
             // Fast-fall mechanic: immediately slam downward
             velocityYRef.current = FAST_FALL_VELOCITY;
+            soundSystem.playSlideSound();
           } else {
             // Regular slide on ground
             isSlidingRef.current = true;
             slideTimerRef.current = SLIDE_DURATION;
+            soundSystem.playSlideSound();
           }
           break;
 

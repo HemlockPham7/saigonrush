@@ -305,7 +305,7 @@ Polished 2D overlay UI, start screen, real-time HUD, and game over modal.
 ### Phase 8: Audio Engine & Sound Synthesis
 Audio manager with Web Audio API procedural synthesis fallbacks.
 
-- [ ] **Task 8.1: Implement Web Audio Synthetic Sound Engine (`SoundSystem.js`)**
+- [x] **Task 8.1: Implement Web Audio Synthetic Sound Engine (`SoundSystem.js`)** ✅ *(done 2026-10-19: Zero-latency Web Audio API synthesizer generating dual-tone coin chimes, jump frequency glides, slide filtered noise bursts, power-up arpeggiated triads, shield crystalline shatter, coffee obstacle smash, and fatal crash thud)*
   - **Description**: Build procedural Web Audio API synthesizer generating zero-latency SFX: coin ding, jump whoosh, slide rustle, power-up stings, shield shatter, and crash thud.
   - **Acceptance Criteria**:
     - Plays immediately without external file dependencies.
@@ -314,7 +314,7 @@ Audio manager with Web Audio API procedural synthesis fallbacks.
   - **Files**: `src/systems/SoundSystem.js`.
   - **Dependencies**: Task 2.1.
 
-- [ ] **Task 8.2: Connect Background Music & Audio Asset Loader**
+- [x] **Task 8.2: Connect Background Music & Audio Asset Loader** ✅ *(done 2026-10-19: Procedural 124 BPM Saigon street-beat electronic groove with 4-on-the-floor kick, offbeat hi-hats, pentatonic synth bass, and chime arpeggios, driven by useAudio hook with seamless autoplay gesture unlock and game-state pause/resume)*
   - **Description**: Add energetic Saigon street-beat background music track with looping, volume control, and graceful user-gesture unlock (handling browser autoplay policies).
   - **Acceptance Criteria**:
     - Audio context starts smoothly on first user click or keypress.
@@ -324,8 +324,8 @@ Audio manager with Web Audio API procedural synthesis fallbacks.
   - **Dependencies**: Task 8.1.
 
 #### Checkpoint 8: Audio System
-- [ ] Sound effects trigger synchronously with gameplay events.
-- [ ] Zero audio errors or unhandled autoplay rejections in browser console.
+- [x] Sound effects trigger synchronously with gameplay events.
+- [x] Zero audio errors or unhandled autoplay rejections in browser console.
 
 ---
 

@@ -1,6 +1,7 @@
 import GameCanvas from './components/canvas/GameCanvas.jsx';
 import { useGameStore } from './store/useGameStore.js';
 import { useKeyboard } from './hooks/useKeyboard.js';
+import { useAudio } from './hooks/useAudio.js';
 import { GAME_STATE } from './systems/constants.js';
 import StartMenu from './components/ui/StartMenu.jsx';
 import HUD from './components/ui/HUD.jsx';
@@ -15,8 +16,9 @@ import './components/ui/UIOverlay.css';
 export default function App() {
   const gameState = useGameStore((state) => state.gameState);
 
-  // Initialize keyboard input listener globally
+  // Initialize keyboard and audio subsystems globally
   useKeyboard();
+  useAudio();
 
   return (
     <main className="app-shell">

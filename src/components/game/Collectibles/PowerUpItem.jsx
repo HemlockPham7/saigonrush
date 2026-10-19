@@ -3,6 +3,7 @@ import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { useGameStore } from '../../../store/useGameStore.js';
 import { GAME_STATE } from '../../../systems/constants.js';
+import { soundSystem } from '../../../systems/SoundSystem.js';
 
 const materials = {
   // Coffee (Cà phê sữa đá)
@@ -125,6 +126,7 @@ function PowerUpItem({
       setCollected(true);
       itemGroupRef.current.visible = false;
       useGameStore.getState().activatePowerUp(type);
+      soundSystem.playPowerUpSound();
       onCollect?.(type);
     }
   });

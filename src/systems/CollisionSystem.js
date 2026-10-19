@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { useGameStore } from '../store/useGameStore.js';
 import { GAME_STATE, POWERUP_CONFIG } from './constants.js';
+import { soundSystem } from './SoundSystem.js';
 
 // Global obstacle registry: Map of obstacleId -> { id, type, box, position, laneIndex, isHit, hasRamp, size }
 const activeObstacles = new Map();
@@ -183,6 +184,7 @@ export function checkCollisions(playerBox, playerData, delta) {
       // Case A: Cà phê speed rush active -> smash obstacle!
       if (coffeeActive) {
         obstacle.isHit = true;
+        soundSystem.playSmashSound();
         return {
           type: 'SMASH_OBSTACLE',
           obstacleId: id,
@@ -200,6 +202,7 @@ export function checkCollisions(playerBox, playerData, delta) {
         obstacle.isHit = true;
         store.consumeShield();
         invincibilityTimer = POWERUP_CONFIG.shield.invincibilityFrames || 1.5;
+        soundSystem.playShieldBreakSound();
 
         return {
           type: 'SHIELD_ABSORB',
@@ -210,6 +213,7 @@ export function checkCollisions(playerBox, playerData, delta) {
 
       // Case D: Fatal crash -> Game Over!
       obstacle.isHit = true;
+      soundSystem.playCrashSound();
       store.gameOver();
 
       return {
