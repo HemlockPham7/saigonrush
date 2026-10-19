@@ -296,7 +296,7 @@ export default function Player() {
   });
 
   return (
-    <group ref={playerGroupRef} position={[0, 0, 0]}>
+    <group ref={playerGroupRef} name="player-root" position={[0, 0, 0]}>
       {/* Tilting & Squashing Body Container */}
       <group ref={bodyGroupRef}>
         {/* --- HEAD & CONICAL HAT (NÓN LÁ) --- */}
@@ -433,6 +433,40 @@ export default function Player() {
           <meshBasicMaterial color="#3be8ff" transparent opacity={0.6} side={THREE.DoubleSide} />
         </mesh>
       </group>
+
+      {/* --- CÀ PHÊ SPEED RUSH AURA --- */}
+      {activePowerUps.coffee > 0 && (
+        <group position={[0, 0.9, 0]}>
+          <mesh rotation-x={Math.PI / 2}>
+            <ringGeometry args={[0.7, 0.9, 24]} />
+            <meshBasicMaterial color="#ff9800" transparent opacity={0.6} side={THREE.DoubleSide} />
+          </mesh>
+          <mesh position={[0, 0, -0.6]} rotation-x={Math.PI / 2}>
+            <planeGeometry args={[1.2, 0.8]} />
+            <meshBasicMaterial color="#ffd166" transparent opacity={0.3} side={THREE.DoubleSide} />
+          </mesh>
+        </group>
+      )}
+
+      {/* --- BÁNH MÌ MAGNET AURA --- */}
+      {activePowerUps.magnet > 0 && (
+        <group position={[0, 0.9, 0]}>
+          <mesh rotation-x={Math.PI / 2}>
+            <torusGeometry args={[0.8, 0.04, 8, 24]} />
+            <meshBasicMaterial color="#3be8ff" transparent opacity={0.7} />
+          </mesh>
+        </group>
+      )}
+
+      {/* --- TRÀ ĐÁ 2X MULTIPLIER AURA --- */}
+      {activePowerUps.multiplier > 0 && (
+        <group position={[0, 0.9, 0]}>
+          <mesh rotation-y={Math.PI / 4}>
+            <octahedronGeometry args={[0.85]} />
+            <meshBasicMaterial color="#76ff03" wireframe transparent opacity={0.4} />
+          </mesh>
+        </group>
+      )}
     </group>
   );
 }

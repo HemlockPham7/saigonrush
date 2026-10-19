@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import * as THREE from 'three';
 import { Shophouse, StreetTree, StreetLamp } from './SceneryElements.jsx';
 import TrackObstacles from './Obstacles/TrackObstacles.jsx';
+import TrackCollectibles from './Collectibles/TrackCollectibles.jsx';
 import { CHUNK_LENGTH, LANE_WIDTH } from '../../systems/constants.js';
 
 // Pre-created static materials
@@ -231,6 +232,11 @@ function TrackChunk({ chunkIndex = 0, position = [0, 0, 0] }) {
           6. ROAD OBSTACLES (Procedural patterns per chunk)
           =================================================================== */}
       <TrackObstacles chunkIndex={chunkIndex} />
+
+      {/* ===================================================================
+          7. COLLECTIBLES & VIETNAMESE POWER-UPS
+          =================================================================== */}
+      <TrackCollectibles chunkIndex={chunkIndex} />
     </group>
   );
 }

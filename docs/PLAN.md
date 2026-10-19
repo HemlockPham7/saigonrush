@@ -206,7 +206,7 @@ Saigon-themed hazards, moving vehicles, buses with ramps, and AABB collision det
 ### Phase 6: Collectibles & Vietnamese Power-Ups
 Coins, power-up meshes, duration countdowns, and active gameplay effects.
 
-- [ ] **Task 6.1: Build Animated Coins & Trail Spawner**
+- [x] **Task 6.1: Build Animated Coins & Trail Spawner** ✅ *(done 2026-10-19: spinning golden star coins with embossed dong star, pickup detection, score/coin store increments, and spawning in straight lines, jump arcs over stools, and Saigon bus roof trails)*
   - **Description**: Create spinning golden star coins with pickup radius. Spawn coins in straight lines, jump arcs over low barriers, and strings along bus roofs.
   - **Acceptance Criteria**:
     - Coins spin continuously with subtle shimmer.
@@ -215,7 +215,7 @@ Coins, power-up meshes, duration countdowns, and active gameplay effects.
   - **Files**: `src/components/game/Collectibles/Coin.jsx`, `src/components/game/Collectibles/CoinPatternSpawner.js`.
   - **Dependencies**: Task 5.5.
 
-- [ ] **Task 6.2: Implement Cà Phê (Vietnamese Coffee) Speed Rush**
+- [x] **Task 6.2: Implement Cà Phê (Vietnamese Coffee) Speed Rush** ✅ *(done 2026-10-19: Cà phê sữa đá with metal phin filter 3D pickup, 6s duration, 1.4x speed boost, obstacle smashing invulnerability, camera FOV dilation from 60° to 72°, and golden speed aura)*
   - **Description**: Build Cà phê sữa đá 3D pickup. When collected: boosts speed by 40%, grants invulnerability (smashes obstacles in path), dilates camera FOV, and displays speed streaks for 6 seconds.
   - **Acceptance Criteria**:
     - 6-second countdown timer.
@@ -224,7 +224,7 @@ Coins, power-up meshes, duration countdowns, and active gameplay effects.
   - **Files**: `src/components/game/Collectibles/PowerUpItem.jsx`, `src/store/useGameStore.js`.
   - **Dependencies**: Task 6.1.
 
-- [ ] **Task 6.3: Implement Nón Lá (Conical Hat) Shield**
+- [x] **Task 6.3: Implement Nón Lá (Conical Hat) Shield** ✅ *(done 2026-10-19: floating golden Nón Lá pickup, grants protective glowing shield aura on player, absorbs 1 collision crash, shatters, and gives 1.5s invincibility frames)*
   - **Description**: Build Nón lá 3D pickup. When collected: spawns glowing conical hat aura over player. Absorbs 1 collision crash, shatters with particle flash, and provides 1.5s invincibility frames.
   - **Acceptance Criteria**:
     - Shield remains active until first collision.
@@ -233,7 +233,7 @@ Coins, power-up meshes, duration countdowns, and active gameplay effects.
   - **Files**: `src/components/game/Collectibles/PowerUpItem.jsx`, `src/components/game/Player.jsx`.
   - **Dependencies**: Task 5.5, Task 6.1.
 
-- [ ] **Task 6.4: Implement Bánh Mì (Baguette) Coin Magnet**
+- [x] **Task 6.4: Implement Bánh Mì (Baguette) Coin Magnet** ✅ *(done 2026-10-19: crispy golden Vietnamese baguette with green chili garnish 3D pickup, 8s duration, pulls all coins within 12m radius across all 3 lanes directly into player, with cyan magnetic flux ring)*
   - **Description**: Build crispy Bánh Mì 3D pickup. When collected: creates magnetic field (radius 12m) that pulls all nearby coins smoothly toward player for 8 seconds.
   - **Acceptance Criteria**:
     - Coins interpolate rapidly to player position across all 3 lanes.
@@ -242,7 +242,7 @@ Coins, power-up meshes, duration countdowns, and active gameplay effects.
   - **Files**: `src/components/game/Collectibles/PowerUpItem.jsx`, `src/components/game/Collectibles/Coin.jsx`.
   - **Dependencies**: Task 6.1.
 
-- [ ] **Task 6.5: Implement Trà Đá (Iced Tea) 2X Score Multiplier**
+- [x] **Task 6.5: Implement Trà Đá (Iced Tea) 2X Score Multiplier** ✅ *(done 2026-10-19: tall glass of Saigon iced tea with ice cubes and straw 3D pickup, 10s duration, doubles both distance score and coin score bonus to +20, with green crystalline aura)*
   - **Description**: Build Trà đá cup pickup. When collected: doubles all score accumulated for 10 seconds and surrounds player with sparkling golden aura.
   - **Acceptance Criteria**:
     - Score accrual rate and coin score bonuses double while active.
@@ -252,8 +252,8 @@ Coins, power-up meshes, duration countdowns, and active gameplay effects.
   - **Dependencies**: Task 6.1.
 
 #### Checkpoint 6: Collectibles & Power-Ups
-- [ ] Coins collect cleanly with responsive audio/visual feedback.
-- [ ] All 4 Vietnamese power-ups work exactly to specification.
+- [x] Coins collect cleanly with responsive audio/visual feedback.
+- [x] All 4 Vietnamese power-ups work exactly to specification.
 
 ---
 
