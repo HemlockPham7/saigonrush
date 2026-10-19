@@ -51,7 +51,7 @@ Foundational setup of the Vite + React 19 + React Three Fiber development enviro
 ### Phase 2: Game State Store & Input Controller
 Decoupled state management and responsive desktop keyboard controls.
 
-- [ ] **Task 2.1: Implement Centralized Game Store (`useGameStore.js`)**
+- [x] **Task 2.1: Implement Centralized Game Store (`useGameStore.js`)** ✅ *(done 2026-10-19: Zustand store with MENU/PLAYING/PAUSED/GAME_OVER states, metrics, power-up timers, shield consumption, and localStorage persistence)*
   - **Description**: Build Zustand store managing state machine (`MENU`, `PLAYING`, `PAUSED`, `GAME_OVER`), live metrics (score, distance, coins, speed), active power-ups, and `localStorage` persistence.
   - **Acceptance Criteria**:
     - Actions `startGame`, `pauseGame`, `gameOver`, `addCoin`, `activatePowerUp`, `toggleMute` update store accurately.
@@ -60,7 +60,7 @@ Decoupled state management and responsive desktop keyboard controls.
   - **Files**: `src/store/useGameStore.js`, `src/systems/constants.js`.
   - **Dependencies**: Task 1.1.
 
-- [ ] **Task 2.2: Implement Keyboard Controls Hook (`useKeyboard.js`)**
+- [x] **Task 2.2: Implement Keyboard Controls Hook (`useKeyboard.js`)** ✅ *(done 2026-10-19: keyboard hook capturing WASD/Arrows/Space/Escape with preventDefault, non-repeating lane/jump triggers, and window blur cleanup)*
   - **Description**: Build dedicated hook capturing `A`/`D`/`Left`/`Right` (lane switch), `W`/`Up`/`Space` (jump), `S`/`Down` (slide/fast-fall), and `P`/`Escape` (pause) with debounced single-press triggers for lane switches and jumps.
   - **Acceptance Criteria**:
     - Clean event listeners with unmount cleanup.
@@ -70,15 +70,15 @@ Decoupled state management and responsive desktop keyboard controls.
   - **Dependencies**: Task 2.1.
 
 #### Checkpoint 2: State & Input
-- [ ] Game state transitions function properly.
-- [ ] Keyboard events trigger cleanly without browser scroll interference.
+- [x] Game state transitions function properly.
+- [x] Keyboard events trigger cleanly without browser scroll interference.
 
 ---
 
 ### Phase 3: Player Controller & 3-Lane Movement
 Character rendering, smooth lane transitions, jumping, sliding, and fast-fall physics.
 
-- [ ] **Task 3.1: Build Procedural Player Mesh & Rig**
+- [x] **Task 3.1: Build Procedural Player Mesh & Rig** ✅ *(done 2026-10-19: stylized procedural Vietnamese street runner with Nón Lá straw cone, red ribbon, jacket, backpack, limbs, running stride, and castShadow)*
   - **Description**: Create stylized low-poly runner component (`Player.jsx`) with iconic Vietnamese character silhouette (street runner with conical hat / backpack), shadow caster, and forward run animation.
   - **Acceptance Criteria**:
     - Procedural mesh with distinct body, head, nón lá, and limbs.
@@ -87,7 +87,7 @@ Character rendering, smooth lane transitions, jumping, sliding, and fast-fall ph
   - **Files**: `src/components/game/Player.jsx`.
   - **Dependencies**: Task 1.3, Task 2.1.
 
-- [ ] **Task 3.2: Implement 3-Lane Switching with Bank Tilting**
+- [x] **Task 3.2: Implement 3-Lane Switching with Bank Tilting** ✅ *(done 2026-10-19: 3-lane switching clamped to [-2.5, 0, 2.5] with dampening factor 18, bank lean rotation on Z, and keyboard action subscription)*
   - **Description**: Connect keyboard lane commands to Player horizontal translation across 3 lanes (`x = -2.5, 0, +2.5`) using critical damping (`THREE.MathUtils.damp`) and subtle roll tilting (`rotation.z`).
   - **Acceptance Criteria**:
     - Snappy lane change completing in ~`180ms`.
@@ -96,7 +96,7 @@ Character rendering, smooth lane transitions, jumping, sliding, and fast-fall ph
   - **Files**: `src/components/game/Player.jsx`.
   - **Dependencies**: Task 2.2, Task 3.1.
 
-- [ ] **Task 3.3: Implement Jumping, Sliding & Fast-Fall Physics**
+- [x] **Task 3.3: Implement Jumping, Sliding & Fast-Fall Physics** ✅ *(done 2026-10-19: parabolic jump with 2.8m apex, sliding with squashed 0.55 scale and 0.8s timer, fast-fall at -18 m/s, boundingBox calculation, and Nón Lá shield aura)*
   - **Description**: Implement parabolic jump arc (apex `2.8m`, gravity `36 m/s²`) and slide roll (character height drops to `0.6m` for `0.8s`). Pressing slide mid-air triggers instant fast-fall to ground.
   - **Acceptance Criteria**:
     - Jump clears 1m obstacles cleanly and lands naturally on ground (`y = 0`).
@@ -107,8 +107,8 @@ Character rendering, smooth lane transitions, jumping, sliding, and fast-fall ph
   - **Dependencies**: Task 3.2.
 
 #### Checkpoint 3: Player Movement
-- [ ] Player moves smoothly between 3 lanes without clipping.
-- [ ] Jumping, sliding, and fast-falling feel tight, agile, and responsive.
+- [x] Player moves smoothly between 3 lanes without clipping.
+- [x] Jumping, sliding, and fast-falling feel tight, agile, and responsive.
 
 ---
 

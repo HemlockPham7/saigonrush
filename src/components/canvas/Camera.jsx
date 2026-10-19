@@ -1,10 +1,11 @@
 import { useLayoutEffect, useRef } from 'react';
 import { PerspectiveCamera } from '@react-three/drei';
 
-// Values from TECH_ARCHITECTURE.md §4.2 (moved to systems/constants.js in Phase 2)
-const CAMERA_POSITION = [0, 3.8, 6.5];
-const CAMERA_LOOK_AT = [0, 1.4, -4.0];
-const CAMERA_FOV = 60;
+import {
+  CAMERA_POSITION,
+  CAMERA_LOOK_AT,
+  CAMERA_FOV,
+} from '../../systems/constants.js';
 
 /**
  * Third-person chase camera. Static in Phase 1; lane-follow sway,
