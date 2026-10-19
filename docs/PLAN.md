@@ -332,7 +332,7 @@ Audio manager with Web Audio API procedural synthesis fallbacks.
 ### Phase 9: 3D Asset Pipeline Polish (Sketchfab Integration) & Optimization
 Curating Sketchfab GLTF/GLB models, fallback degradation, and 60 FPS performance tuning.
 
-- [ ] **Task 9.1: Configure `useGLTF` Asset Loader & Graceful Fallbacks**
+- [x] **Task 9.1: Configure `useGLTF` Asset Loader & Graceful Fallbacks** ✅ *(done 2026-10-19: Created ModelLoader with ModelErrorBoundary, React.Suspense, deep scene cloning for chunk pool recycling, shadow inheritance, and modular procedural fallbacks in src/components/game/fallbacks/)*
   - **Description**: Create asset loader utility leveraging `@react-three/drei`'s `useGLTF` with Draco decoder support. Wrap every 3D model in a component that gracefully falls back to procedural geometry if the GLB file is missing or loading.
   - **Acceptance Criteria**:
     - Zero runtime crashes or broken meshes if external models are absent.
@@ -341,7 +341,7 @@ Curating Sketchfab GLTF/GLB models, fallback degradation, and 60 FPS performance
   - **Files**: `src/components/game/ModelLoader.jsx`, `src/components/game/fallbacks/`.
   - **Dependencies**: Phase 3, Phase 5.
 
-- [ ] **Task 9.2: Curate & Integrate Sketchfab / 3D Models in `public/assets/models/`**
+- [x] **Task 9.2: Curate & Integrate Sketchfab / 3D Models in `public/assets/models/`** ✅ *(done 2026-10-19: Exported and optimized 7 authentic Saigon low-poly GLB models under 50KB each for coin, coffee, shield, banhmi, icedtea, motorbike, and foodcart, with comprehensive artist drop-in guide in public/assets/models/README.md)*
   - **Description**: Prepare and integrate free CC-licensed / low-poly 3D models for character runner, motorbike, bus, and power-up icons.
   - **Acceptance Criteria**:
     - Models compressed and optimized for web delivery (< 2MB each).
@@ -350,7 +350,7 @@ Curating Sketchfab GLTF/GLB models, fallback degradation, and 60 FPS performance
   - **Files**: `public/assets/models/`.
   - **Dependencies**: Task 9.1.
 
-- [ ] **Task 9.3: Performance Profiling, Shadow Tuning & Final Polish**
+- [x] **Task 9.3: Performance Profiling, Shadow Tuning & Final Polish** ✅ *(done 2026-10-19: Configured clamped dpr={[1, 1.5]}, soft PCF percentage shadows, zero-allocation useFrame math, seamless linear fog culling at z=140m, and clean Vite production bundle)*
   - **Description**: Profile frame times, tune shadow map resolution, verify frustum culling, and ensure steady 60 FPS on standard desktop displays.
   - **Acceptance Criteria**:
     - Rock-solid 60 FPS with zero memory leaks over extended play sessions.
@@ -360,8 +360,8 @@ Curating Sketchfab GLTF/GLB models, fallback degradation, and 60 FPS performance
   - **Dependencies**: All preceding tasks.
 
 #### Checkpoint 9: Final Release Quality
-- [ ] Complete, polished, playable 3D endless runner game meeting all PRD criteria.
-- [ ] 60 FPS desktop performance with authentic Saigon street vibes.
+- [x] Complete, polished, playable 3D endless runner game meeting all PRD criteria.
+- [x] 60 FPS desktop performance with authentic Saigon street vibes.
 
 ---
 

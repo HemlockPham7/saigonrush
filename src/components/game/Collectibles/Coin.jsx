@@ -4,23 +4,9 @@ import * as THREE from 'three';
 import { useGameStore } from '../../../store/useGameStore.js';
 import { GAME_STATE, COIN_RADIUS, POWERUP_CONFIG } from '../../../systems/constants.js';
 import { soundSystem } from '../../../systems/SoundSystem.js';
-
-// Shared materials for coins
-const coinMaterials = {
-  goldFace: new THREE.MeshStandardMaterial({
-    color: '#ffd166',
-    metalness: 0.85,
-    roughness: 0.2,
-  }),
-  goldRim: new THREE.MeshStandardMaterial({
-    color: '#f4a261',
-    metalness: 0.9,
-    roughness: 0.25,
-  }),
-  starEmboss: new THREE.MeshBasicMaterial({
-    color: '#ffffff',
-  }),
-};
+import ModelLoader from '../ModelLoader.jsx';
+import { MODEL_PATHS, USE_GLTF_MODELS } from '../modelRegistry.js';
+import ProceduralCoin from '../fallbacks/ProceduralCoin.jsx';
 
 // Reusable vectors for zero-allocation math
 const _coinWorldPos = new THREE.Vector3();
@@ -97,21 +83,12 @@ function Coin({
 
   return (
     <group ref={coinRef} position={position} name="coin">
-      {/* Outer Coin Disc */}
-      <mesh rotation-x={Math.PI / 2} castShadow material={coinMaterials.goldFace}>
-        <cylinderGeometry args={[0.26, 0.26, 0.05, 16]} />
-      </mesh>
-      {/* Embossed Outer Rim */}
-      <mesh rotation-x={Math.PI / 2} material={coinMaterials.goldRim}>
-        <torusGeometry args={[0.24, 0.02, 8, 16]} />
-      </mesh>
-      {/* Center Star Emblem */}
-      <mesh position={[0, 0, 0.027]} material={coinMaterials.starEmboss}>
-        <planeGeometry args={[0.16, 0.16]} />
-      </mesh>
-      <mesh position={[0, 0, -0.027]} rotation-y={Math.PI} material={coinMaterials.starEmboss}>
-        <planeGeometry args={[0.16, 0.16]} />
-      </mesh>
+      <ModelLoader
+        url={MODEL_PATHS.coin}
+        enabled={USE_GLTF_MODELS.coin}
+        scale={1}
+        fallback={<ProceduralCoin />}
+      />
     </group>
   );
 }
