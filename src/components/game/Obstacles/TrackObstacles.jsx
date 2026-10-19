@@ -1,0 +1,151 @@
+import React, { useEffect, useRef } from 'react';
+import { useFrame } from '@react-three/fiber';
+import * as THREE from 'three';
+import LowBarrier from './LowBarrier.jsx';
+import OverheadWires from './OverheadWires.jsx';
+import Motorbike from './Motorbike.jsx';
+import FoodCart from './FoodCart.jsx';
+import SaigonBus from './SaigonBus.jsx';
+import { LANES, LANE_VALUES } from '../../../systems/constants.js';
+import {
+  registerObstacle,
+  updateObstacleBox,
+  unregisterObstacle,
+} from '../../../systems/CollisionSystem.js';
+
+// Pre-allocated vectors & boxes for zero-allocation useFrame updates
+const _tempWorldPos = new THREE.Vector3();
+const _tempBox = new THREE.Box3();
+const _halfSize = new THREE.Vector3();
+
+// Preset patterns for deterministic, balanced generation (at least 1 safe path always guaranteed!)
+const OBSTACLE_PATTERNS = [
+  // Pattern 0: Low Stools in Left, Motorbike in Right (Center is safe)
+  [
+    { type: 'low', lane: 0, zOffset: -7.5, variant: 0, size: [1.2, 0.65, 0.7] },
+    { type: 'motorbike', lane: 2, zOffset: 7.5, isMoving: true, size: [0.9, 1.35, 1.7] },
+  ],
+  // Pattern 1: Overhead Wires in Center (slide under), Food Cart in Left (Right is open)
+  [
+    { type: 'overhead', lane: 1, zOffset: -6.0, variant: 0, size: [2.2, 1.2, 0.6], yOffset: 1.6 },
+    { type: 'foodcart', lane: 0, zOffset: 8.0, size: [1.1, 1.8, 1.6] },
+  ],
+  // Pattern 2: Saigon Bus with Ramp in Right, Low Barrier in Center (Left is open)
+  [
+    { type: 'bus', lane: 2, zOffset: -3.0, hasRamp: true, size: [2.1, 2.4, 8.5], yOffset: 1.2 },
+    { type: 'low', lane: 1, zOffset: 8.5, variant: 1, size: [1.3, 0.65, 0.7] },
+  ],
+  // Pattern 3: Motorbike in Center, Overhead Awning in Left (slide under, Right is open)
+  [
+    { type: 'motorbike', lane: 1, zOffset: -7.0, isMoving: false, size: [0.9, 1.35, 1.7] },
+    { type: 'overhead', lane: 0, zOffset: 7.5, variant: 1, size: [2.2, 1.2, 0.6], yOffset: 1.6 },
+  ],
+  // Pattern 4: Food Cart in Center, Low Barrier in Right (Left is open)
+  [
+    { type: 'foodcart', lane: 1, zOffset: -6.5, size: [1.1, 1.8, 1.6] },
+    { type: 'low', lane: 2, zOffset: 7.5, variant: 2, size: [1.3, 0.65, 0.7] },
+  ],
+  // Pattern 5: Saigon Bus with Ramp in Left, Motorbike in Center (Right is open)
+  [
+    { type: 'bus', lane: 0, zOffset: -4.0, hasRamp: true, size: [2.1, 2.4, 8.5], yOffset: 1.2 },
+    { type: 'motorbike', lane: 1, zOffset: 7.0, isMoving: true, size: [0.9, 1.35, 1.7] },
+  ],
+];
+
+/**
+ * TrackObstacles component
+ * Renders the obstacle set for a specific track chunk and registers their
+ * 3D bounding boxes into the CollisionSystem.
+ */
+function TrackObstacles({ chunkIndex = 0 }) {
+  const obstacleGroupRefs = useRef([]);
+
+  // First chunk has no obstacles so the runner begins with an open track
+  const pattern =
+    chunkIndex === 0
+      ? []
+      : OBSTACLE_PATTERNS[(chunkIndex - 1) % OBSTACLE_PATTERNS.length];
+
+  // Register obstacles in CollisionSystem
+  useEffect(() => {
+    const ids = [];
+
+    pattern.forEach((obs, idx) => {
+      const id = `chunk-${chunkIndex}-obs-${idx}`;
+      ids.push(id);
+
+      const laneX = LANE_VALUES[obs.lane];
+      const yPos = obs.yOffset || obs.size[1] / 2;
+      const initialPos = new THREE.Vector3(laneX, yPos, obs.zOffset);
+
+      _halfSize.set(obs.size[0] / 2, obs.size[1] / 2, obs.size[2] / 2);
+      const initialBox = new THREE.Box3(
+        new THREE.Vector3().subVectors(initialPos, _halfSize),
+        new THREE.Vector3().addVectors(initialPos, _halfSize)
+      );
+
+      registerObstacle(id, {
+        id,
+        type: obs.type,
+        laneIndex: obs.lane,
+        box: initialBox,
+        position: initialPos,
+        isHit: false,
+      });
+    });
+
+    return () => {
+      ids.forEach((id) => unregisterObstacle(id));
+    };
+  }, [chunkIndex, pattern]);
+
+  // Update world bounding boxes every frame as the chunk moves
+  useFrame(() => {
+    pattern.forEach((obs, idx) => {
+      const group = obstacleGroupRefs.current[idx];
+      if (!group) return;
+
+      const id = `chunk-${chunkIndex}-obs-${idx}`;
+      group.getWorldPosition(_tempWorldPos);
+
+      // Adjust box center based on obstacle type
+      const yCenter = (obs.yOffset || obs.size[1] / 2);
+      _tempWorldPos.y = yCenter;
+
+      _halfSize.set(obs.size[0] / 2, obs.size[1] / 2, obs.size[2] / 2);
+      _tempBox.set(
+        new THREE.Vector3().subVectors(_tempWorldPos, _halfSize),
+        new THREE.Vector3().addVectors(_tempWorldPos, _halfSize)
+      );
+
+      updateObstacleBox(id, _tempBox, _tempWorldPos);
+    });
+  });
+
+  if (pattern.length === 0) return null;
+
+  return (
+    <group name="chunk-obstacles">
+      {pattern.map((obs, idx) => {
+        const laneX = LANE_VALUES[obs.lane];
+        const pos = [laneX, 0, obs.zOffset];
+
+        return (
+          <group
+            key={`obs-${chunkIndex}-${idx}`}
+            ref={(el) => (obstacleGroupRefs.current[idx] = el)}
+            position={pos}
+          >
+            {obs.type === 'low' && <LowBarrier variant={obs.variant} />}
+            {obs.type === 'overhead' && <OverheadWires variant={obs.variant} />}
+            {obs.type === 'motorbike' && <Motorbike isMoving={obs.isMoving} />}
+            {obs.type === 'foodcart' && <FoodCart />}
+            {obs.type === 'bus' && <SaigonBus hasRamp={obs.hasRamp} />}
+          </group>
+        );
+      })}
+    </group>
+  );
+}
+
+export default React.memo(TrackObstacles);

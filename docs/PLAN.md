@@ -115,7 +115,7 @@ Character rendering, smooth lane transitions, jumping, sliding, and fast-fall ph
 ### Phase 4: Endless Track Generation & Saigon Environment
 Infinite chunk streaming, road styling, shophouses, and roadside scenery.
 
-- [ ] **Task 4.1: Build Modular Road & Sidewalk Segment (`TrackChunk.jsx`)**
+- [x] **Task 4.1: Build Modular Road & Sidewalk Segment (`TrackChunk.jsx`)** ✅ *(done 2026-10-19: 30-meter track segment with 3 asphalt lanes at x = -2.5, 0, 2.5, outer boundary shoulders, dashed dividers, sidewalks, and yellow painted curbs)*
   - **Description**: Create 30-meter track segment containing 3 asphalt lanes with dashed white markings, curbs with yellow-black paint stripes, and sidewalk tile textures.
   - **Acceptance Criteria**:
     - Exact 3-lane alignment matching player lane coordinates (`-2.5, 0, 2.5`).
@@ -124,7 +124,7 @@ Infinite chunk streaming, road styling, shophouses, and roadside scenery.
   - **Files**: `src/components/game/TrackChunk.jsx`.
   - **Dependencies**: Task 1.3.
 
-- [ ] **Task 4.2: Build Procedural Saigon Shophouses & Street Scenery**
+- [x] **Task 4.2: Build Procedural Saigon Shophouses & Street Scenery** ✅ *(done 2026-10-19: colonial shophouses with Saigon pastel colors, shuttered windows, balconies, awnings, neon signboards, tamarind trees, streetlamps, and overhead wires)*
   - **Description**: Add colorful colonial-style facades (pastel yellow, mint green, terra-cotta), shuttered windows, Vietnamese business neon signs (*Cà Phê*, *Bánh Mì*, *Tiệm May*), tropical tamarind trees, and streetlights along sidewalks.
   - **Acceptance Criteria**:
     - Vibrant, diverse architectural streetscape flanking both sides of the roadway.
@@ -133,7 +133,7 @@ Infinite chunk streaming, road styling, shophouses, and roadside scenery.
   - **Files**: `src/components/game/TrackChunk.jsx`, `src/components/game/SceneryElements.jsx`.
   - **Dependencies**: Task 4.1.
 
-- [ ] **Task 4.3: Implement Dynamic Chunk Pooling & Infinite Scrolling (`TrackPool.jsx`)**
+- [x] **Task 4.3: Implement Dynamic Chunk Pooling & Infinite Scrolling (`TrackPool.jsx`)** ✅ *(done 2026-10-19: 6-chunk object pool streaming 180m ahead, translating along positive Z at current speed with coffee boost, recycling past z > 25 with fresh randomized shophouse variants, and updating run distance)*
   - **Description**: Maintain an active pool of 5 chunks covering 150m ahead. Translate chunks along positive Z at current `gameSpeed`. When a chunk passes behind camera (`z > 25`), recycle and reposition it at the front of the queue.
   - **Acceptance Criteria**:
     - Endless track scrolling with zero hitching or memory leaks.
@@ -143,15 +143,15 @@ Infinite chunk streaming, road styling, shophouses, and roadside scenery.
   - **Dependencies**: Task 4.2, Task 2.1.
 
 #### Checkpoint 4: Track Streaming
-- [ ] World streams endlessly at 60 FPS.
-- [ ] Saigon street environment looks authentic and lively.
+- [x] World streams endlessly at 60 FPS.
+- [x] Saigon street environment looks authentic and lively.
 
 ---
 
 ### Phase 5: Obstacle System & Collision Engine
 Saigon-themed hazards, moving vehicles, buses with ramps, and AABB collision detection.
 
-- [ ] **Task 5.1: Build Low Hurdles (Plastic Stools & Street Vendor Baskets)**
+- [x] **Task 5.1: Build Low Hurdles (Plastic Stools & Street Vendor Baskets)** ✅ *(done 2026-10-19: LowBarrier with 3 variants: plastic street stools & table, bamboo fruit baskets with carrying pole, and yellow/black construction barrier; height 0.65m cleanly jumpable)*
   - **Description**: Create red/blue plastic cafe stools (*ghế nhựa*) and bamboo fruit baskets (*gánh hàng rong*) positioned in single lanes, requiring player to jump over or switch lanes.
   - **Acceptance Criteria**:
     - Height `0.5m - 0.7m`. Cleanly jumpable.
@@ -160,7 +160,7 @@ Saigon-themed hazards, moving vehicles, buses with ramps, and AABB collision det
   - **Files**: `src/components/game/Obstacles/LowBarrier.jsx`.
   - **Dependencies**: Task 4.1.
 
-- [ ] **Task 5.2: Build Overhead Hazards (Tangled Electrical Wires & Awnings)**
+- [x] **Task 5.2: Build Overhead Hazards (Tangled Electrical Wires & Awnings)** ✅ *(done 2026-10-19: OverheadWires with utility poles, high voltage plate, meter box, and tangled cable sag / canvas awning reaching y = 1.15m; requires sliding under to avoid crash)*
   - **Description**: Create iconic Saigon overhead electrical wire bundles (*mạng nhện dây điện*) and low canvas cafe awnings spanning across lanes with clearance underneath.
   - **Acceptance Criteria**:
     - Wire bundle bottom clearance at `1.2m`.
@@ -169,7 +169,7 @@ Saigon-themed hazards, moving vehicles, buses with ramps, and AABB collision det
   - **Files**: `src/components/game/Obstacles/OverheadWires.jsx`.
   - **Dependencies**: Task 4.1.
 
-- [ ] **Task 5.3: Build Moving Motorbikes & Street Food Carts**
+- [x] **Task 5.3: Build Moving Motorbikes & Street Food Carts** ✅ *(done 2026-10-19: Honda Wave/Cub motorbike with wheels, fairing, exhaust, luggage cargo and optional forward cruising, and stainless steel food cart with wheels, glass counter, baguettes and soup pot)*
   - **Description**: Create iconic Honda Wave/Cub style motorbikes (parked or cruising forward at slow speed) and wheeled street food carts (*xe bánh mì / hủ tiếu*).
   - **Acceptance Criteria**:
     - Moving motorbikes travel at `30%` player forward speed.
@@ -178,7 +178,7 @@ Saigon-themed hazards, moving vehicles, buses with ramps, and AABB collision det
   - **Files**: `src/components/game/Obstacles/Motorbike.jsx`, `src/components/game/Obstacles/FoodCart.jsx`.
   - **Dependencies**: Task 4.1.
 
-- [ ] **Task 5.4: Build Saigon City Bus with Climbable Front Ramp**
+- [x] **Task 5.4: Build Saigon City Bus with Climbable Front Ramp** ✅ *(done 2026-10-19: SaigonBus with green/white city livery, route LED display, passenger windows, tires, walkable roof at y = 2.45m, and sloped front ramp with chevron stripes)*
   - **Description**: Create green Saigon city bus occupying an entire lane. Attach a road ramp in front allowing the player to run or jump up onto the bus roof to collect elevated coin trails.
   - **Acceptance Criteria**:
     - Front collision with bumper causes crash.
@@ -188,7 +188,7 @@ Saigon-themed hazards, moving vehicles, buses with ramps, and AABB collision det
   - **Files**: `src/components/game/Obstacles/SaigonBus.jsx`.
   - **Dependencies**: Task 3.3, Task 4.1.
 
-- [ ] **Task 5.5: Implement AABB Collision Detection Engine (`CollisionSystem.js`)**
+- [x] **Task 5.5: Implement AABB Collision Detection Engine (`CollisionSystem.js`)** ✅ *(done 2026-10-19: AABB Box3 intersection engine with broad/narrow phase filtering, slide evasion under overhead wires, Nón Lá shield absorption with invincibility frames, Cà phê speed smash, and fatal crash game over)*
   - **Description**: Implement per-frame 3D Box3 intersection testing in `useFrame` between player bounding box and active obstacles within proximity (`|Δz| < 3m`). Handle invulnerability frames, shield hits, and fatal crashes.
   - **Acceptance Criteria**:
     - Precise collision bounds for standing, jumping, and sliding states.
@@ -198,8 +198,8 @@ Saigon-themed hazards, moving vehicles, buses with ramps, and AABB collision det
   - **Dependencies**: Tasks 5.1 - 5.4.
 
 #### Checkpoint 5: Obstacles & Collisions
-- [ ] All 4 obstacle categories spawn in balanced procedural patterns.
-- [ ] Jump, slide, and lane-switch evasions work with precise collision responses.
+- [x] All 4 obstacle categories spawn in balanced procedural patterns.
+- [x] Jump, slide, and lane-switch evasions work with precise collision responses.
 
 ---
 

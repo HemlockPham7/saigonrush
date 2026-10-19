@@ -16,6 +16,7 @@ import {
   SLIDE_HEIGHT,
   GAME_STATE,
 } from '../../systems/constants.js';
+import { checkCollisions, isInvincible } from '../../systems/CollisionSystem.js';
 
 // Reusable vectors for zero-allocation math in useFrame
 const _playerCenter = new THREE.Vector3();
@@ -263,6 +264,35 @@ export default function Player() {
       isSliding: isSlidingRef.current,
       boundingBox: boundingBoxRef.current,
     };
+
+    // 7. Check Collisions with Active Obstacles
+    if (isPlaying) {
+      const hitResult = checkCollisions(
+        boundingBoxRef.current,
+        {
+          posY: posYRef.current,
+          isJumping: isJumpingRef.current,
+          isSliding: isSlidingRef.current,
+          currentX: currentXRef.current,
+          laneIndex: laneIndexRef.current,
+        },
+        dt
+      );
+
+      if (hitResult?.type === 'FATAL_CRASH') {
+        // Tumble knockback reaction
+        bodyGroupRef.current.rotation.x = -Math.PI / 3;
+        bodyGroupRef.current.position.y = -0.3;
+      }
+    }
+
+    // 8. Invincibility Blinking Effect (After shield absorb)
+    if (isInvincible()) {
+      const isVisible = Math.sin(state.clock.elapsedTime * 25.0) > 0;
+      bodyGroupRef.current.visible = isVisible;
+    } else {
+      bodyGroupRef.current.visible = true;
+    }
   });
 
   return (
