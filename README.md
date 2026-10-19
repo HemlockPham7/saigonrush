@@ -120,6 +120,3 @@ You have used some of your 5-hour limit, it will fully refresh in 3 hours, 20 mi
 
 ---
 
-## 📄 License
-
-MIT License. Designed and developed with ❤️ for Saigon.
